@@ -1,0 +1,11 @@
+#
+# LGE touch core configuration
+#
+if INPUT_TOUCHSCREEN
+
+source "drivers/input/touchscreen/lge/lgsic/LG4894/Kconfig"
+source "drivers/input/touchscreen/lge/lgsic/LG4945/Kconfig"
+source "drivers/input/touchscreen/lge/lgsic/LG4946/Kconfig"
+
+endif
+

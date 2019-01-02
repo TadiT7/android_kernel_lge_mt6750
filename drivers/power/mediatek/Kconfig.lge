@@ -1,0 +1,200 @@
+config LGE_PM_EXTERNAL_CHARGER_SUPPORT
+	bool "Common MTK external battery charger interface for LG Electronics"
+	depends on LGE_PM
+	default n
+	help
+	  Say Y to include support for External Battery Charger IC
+
+if LGE_PM_EXTERNAL_CHARGER_SUPPORT
+
+config LGE_PM_EXTERNAL_CHARGER_BQ24262_SUPPORT
+	bool "BQ24262 External Battery Charger for LG Electronics"
+	default n
+	help
+	  Support bq24262 Charger.
+	  Say Y to include support for
+	  BQ24296 Charger IC.
+	  Say N to disable it.
+
+config LGE_PM_EXTERNAL_CHARGER_BQ24296_SUPPORT
+	bool "BQ24296 External Battery Charger for LG Electronics"
+	default n
+	help
+	  Support bq24296 Charger.
+	  Say Y to include support for
+	  BQ24296 Charger IC.
+	  Say N to disable it.
+
+config LGE_PM_EXTERNAL_CHARGER_RT9460_SUPPORT
+	bool "RT9460 External Battery Charger for LG Electronics"
+	default n
+	help
+	  Say Y to include support for RT9460 Charger IC
+
+config LGE_PM_EXTERNAL_CHARGER_RT9460_SUPPORT_DUMP_REGISTER
+	bool "RT9460 register dump"
+	depends on LGE_PM_EXTERNAL_CHARGER_RT9460_SUPPORT
+	default n
+	help
+	  Say Y to dump rt9460 register
+
+config LGE_PM_EXTERNAL_CHARGER_RT9460_NOISE_WA
+	bool "RT9460 noise WA"
+	depends on LGE_PM_EXTERNAL_CHARGER_RT9460_SUPPORT
+	default n
+	help
+	  Say Y to remove audio noise issue on low battery
+
+config LGE_PM_EXTERNAL_CHARGER_SM5424_SUPPORT
+	bool "SM5424 External Battery Charger for LG Electronics"
+	default n
+	help
+	  Say Y to include support for SM5424 Charger IC
+
+config LGE_PM_EXTERNAL_CHARGER_BQ25898S_SLAVE_SUPPORT
+	bool "BQ25898S External Battery Charger for LG Electronics"
+	depends on LGE_PM_EXTERNAL_CHARGER_SM5424_SUPPORT
+	default n
+	help
+	  Say Y to include support for BQ25898S Charger IC
+
+config LGE_PM_EXTERNAL_CHARGER_BQ25601_SUPPORT
+	bool "TI BQ25601 external battery charger support"
+	default n
+	help
+	  Say Y to include support for TI BQ25601 Charger IC
+
+config LGE_PM_EXTERNAL_CHARGER_FAN54005_SUPPORT
+	bool "FC FAN54005 external battery charger support"
+	default n
+	help
+	  Say Y to include support for FairChild FAN54005 Charger IC
+
+endif # LGE_PM_EXTERNAL_CHARGER_SUPPORT
+
+if LGE_PM
+
+config LGE_PM_BATTERY_OCV_COMPENSATE
+    bool "This is to enable LGE supports to battery ocv compensation"
+    default n
+    help
+	  Say Y to support battery ocv compensation
+
+config LGE_PM_BATTERY_PRESENT
+	bool "battery present monitoring support"
+	default n
+	help
+	  Say Y to include support for BATTERY PRESENT
+
+config LGE_PM_EXTERNAL_CHARGER_SAFETY_TIMER_SUPPORT
+	tristate "External charger can support safety timer"
+	default n
+	help
+	  Say Y when external charger support safety timer
+
+config LGE_PM_TEMP_BY_CHG
+	bool "This is to enable Temperature compensation when Fast Charging"
+	default n
+	help
+	  Say Y to enable temperature compensation support
+
+config LGE_PM_CHARGER_CONTROLLER
+	bool "LG Electronics charging scenario support"
+	default n
+	help
+	  Say Y to enable charger-controller
+
+config LGE_PM_FLOATED_CHARGER_DETECT
+	bool "Floated charger detect"
+	default n
+	help
+	  Say Y to enable floated charger detect
+
+config LGE_PM_LLK_MODE
+	bool "restrict charging due to the battery level for demo in store"
+	depends on LGE_PM_CHARGER_CONTROLLER
+	default n
+	help
+	  Restrict charging based on battery level
+
+config LGE_PM_CHARGE_INFO
+	bool "Logging battery status to kmsg"
+	depends on LGE_PM_CHARGER_CONTROLLER
+	default n
+	help
+	  monitor battery status and print log in kmsg.
+
+config LGE_PM_CHARGE_SCENARIO_OTP
+	bool "Battery charge scenario for over temperature protection"
+	depends on LGE_PM_CHARGER_CONTROLLER
+	default n
+	help
+	  LGE common battery charge protection scenario for over temperature.
+
+config LGE_PM_CHARGE_SCENARIO_THERMAL
+	bool "Battery charge scenario for cooling device"
+	depends on LGE_PM_CHARGER_CONTROLLER
+	default n
+	help
+	  limit battery charge current to cool device.
+
+config LGE_PM_CHARGE_SCENARIO_FB
+	bool "Battery charge scenario for dispaly on/off"
+	depends on LGE_PM_CHARGER_CONTROLLER
+	default n
+	help
+	  limit battery charge current by display on/off.
+
+config LGE_PM_CHARGE_SCENARIO_CALL
+	bool "Battery charge scenario for call"
+	depends on LGE_PM_CHARGER_CONTROLLER
+	default n
+	help
+	  limit battery charge current for call quality.
+
+config LGE_PM_CHARGE_SAFETY_TIMER
+	bool "Battery charge scenario for safety timer"
+	depends on LGE_PM_CHARGER_CONTROLLER
+	default n
+	help
+	  limit battery charge when charge time is too long.
+
+config LGE_PM_CHARGE_SCENARIO_SPEC
+	bool "Battery charge scenario for battery specification"
+	depends on LGE_PM_CHARGER_CONTROLLER
+	default n
+	help
+	  limit battery charge current by specification.
+
+config LGE_PM_MTK_POWERTOP
+	bool "This is applied due to support power-top.lge"
+	default n
+	help
+	  support power-top.lge
+
+config LGE_PM_MTK_SAVE_BATTERY_CYCLE_GM_2_0
+	bool "This is applied due to battery cycle debugging"
+	default n
+	help
+	  support save battery cycle
+
+config LGE_PM_MTK_CANCUN_GOV
+	bool "This is applied due to porting cancun governor for mt6750"
+	default n
+	help
+	  cancun governor
+
+config LGE_PM_MTK_GAME_MODE
+	bool "This is applied due to support game mode for mt6750"
+	default n
+	help
+	  this feature is for game auto mode. if set, cpu freq.(or core) will
+	  be limited for user safety.
+
+config LGE_PM_THERMAL_UPPER_THRE
+	bool "This is applied to restrict only in game mode for mt6750"
+	default n
+	help
+	  this feature is for game bcct mode. if set, charging current will
+	  be limited only in game mode.
+endif # LGE_PM

@@ -1,0 +1,42 @@
+/*
+ * LG Electronics mt6750 common function device tree source
+ *
+ * Copyright (c) 2016 LG Electronics Co., Ltd.
+ *              http://www.lge.com
+ *
+ */
+
+/ {
+	reserved-memory {
+		smembackup-reserved-memory@46400000 {
+			compatible = "lge,smembackup";
+			reg = <0 0x46400000 0 0x20000>;
+		};
+
+		atfbackup-reserved-memory@46420000 {
+			compatible = "lge,atfbackup";
+			reg = <0 0x46420000 0 0x40000>;
+		};
+
+		atflogbackup-reserved-memory@46460000 {
+			compatible = "lge,atflogbackup";
+			reg = <0 0x46460000 0 0x30000>;
+		};
+
+		busdbgbackup-reserved-memory@46490000 {
+			compatible = "lge,busdbgbackup";
+			reg = <0 0x46490000 0 0x1000>;
+		};
+
+		lge-ramconsole-reserved-memory@464A0000 {
+			compatible = "lge,ramconsole_mem";
+			reg = <0 0x464A0000 0 0x60000>;
+		};
+	};
+
+	lge_ramconsole {
+		compatible = "lge,ramconsole";
+		trace_data_size = <0x20000>;
+		trace_log_size = <0x40000>;
+	};
+};

@@ -1,0 +1,219 @@
+/* BMA255 motion sensor driver
+ *
+ *
+ * This software program is licensed subject to the GNU General Public License
+ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
+
+ * (C) Copyright 2011 Bosch Sensortec GmbH
+ * All Rights Reserved
+ */
+
+#ifndef BMA255_H
+#define BMA255_H
+
+#include <linux/ioctl.h>
+
+#ifdef CONFIG_LGE_SENSOR_SLOPE_DETECTOR
+#ifdef CONFIG_MTK_BMA255_INT_ENABLE
+#define BMA255_ENABLE_INT1
+#endif
+#endif
+
+
+/* 7-bit addr: 0x18 (SDO connected to GND); 0x19 (SDO connected to VDDIO) */
+#define BMA255_I2C_ADDR				0x18
+/* chip ID */
+#define BMA255_FIXED_DEVID			0xFA
+
+ /* BMA255 Register Map  (Please refer to BMA255 Specifications) */
+#define BMA255_REG_DEVID			0x00
+#define BMA255_REG_OFSX				0x16
+#define BMA255_REG_OFSX_HIGH			0x1A
+#define BMA255_REG_BW_RATE			0x10
+#define BMA255_BW_MASK				0x1f
+
+#define BMA255_BW_200HZ				0x0d
+#define BMA255_BW_100HZ				0x0c
+#define BMA255_BW_50HZ				0x0b
+#define BMA255_BW_25HZ				0x0a
+#define BMA255_REG_POWER_CTL			0x11
+#define BMA255_REG_DATA_FORMAT			0x0f
+#define BMA255_RANGE_MASK			0x0f
+#define BMA255_RANGE_2G				0x03
+#define BMA255_RANGE_4G				0x05
+#define BMA255_RANGE_8G				0x08
+#define BMA255_REG_DATAXLOW			0x02
+#define BMA255_REG_DATA_RESOLUTION		0x14
+#define BMA255_MEASURE_MODE			0x80
+#define BMA255_SELF_TEST			0x32
+#define BMA255_SELF_TEST_AXIS_X			0x01
+#define BMA255_SELF_TEST_AXIS_Y			0x02
+#define BMA255_SELF_TEST_AXIS_Z			0x03
+#define BMA255_SELF_TEST_POSITIVE		0x00
+#define BMA255_SELF_TEST_NEGATIVE		0x04
+#define BMA255_INT_REG_1			0x16
+#define BMA255_INT_REG_2			0x17
+
+#ifdef BMA255_ENABLE_INT1
+#define BMA255_INT1_PAD_SEL_REG			0x19
+#define BMA255_INT_DATA_SEL_REG			0x1A
+#endif // BMA255_ENABLE_INT1
+
+
+#define BMA255_FIFO_MODE_REG                    0x3E
+#define BMA255_FIFO_DATA_OUTPUT_REG             0x3F
+#define BMA255_STATUS_FIFO_REG                  0x0E
+
+#define BMA255_X_AXIS_LSB_REG		0x02
+#define BMA255_X_AXIS_MSB_REG		0x03
+#define BMA255_Y_AXIS_LSB_REG		0x04
+#define BMA255_Y_AXIS_MSB_REG		0x05
+#define BMA255_Z_AXIS_LSB_REG		0x06
+#define BMA255_Z_AXIS_MSB_REG		0x07
+
+#ifdef BMA255_ENABLE_INT1
+#define BMA255_STATUS1_REG          0x09
+#define BMA255_STATUS_TAP_SLOPE_REG	0x0B
+#endif // BMA255_ENABLE_INT1
+
+#define BMA255_EN_SOFT_RESET__POS	0
+#define BMA255_EN_SOFT_RESET__LEN	8
+#define BMA255_EN_SOFT_RESET__MSK	0xFF
+#define BMA255_EN_SOFT_RESET__REG	BMA255_RESET_REG
+
+#ifdef BMA255_ENABLE_INT1
+#define BMA255_SLOPE_DURN_REG       0x27
+#define BMA255_SLOPE_THRES_REG      0x28
+#endif // BMA255_ENABLE_INT1
+
+#define BMA255_EEPROM_CTRL_REG		0x33
+#define BMA255_OFFSET_CTRL_REG		0x36
+#define BMA255_OFFSET_PARAMS_REG	0x37
+#define BMA255_OFFSET_X_AXIS_REG	0x38
+#define BMA255_OFFSET_Y_AXIS_REG	0x39
+#define BMA255_OFFSET_Z_AXIS_REG	0x3A
+
+#define BMA255_CUT_OFF				0
+#define BMA255_OFFSET_TRIGGER_X		1
+#define BMA255_OFFSET_TRIGGER_Y		2
+#define BMA255_OFFSET_TRIGGER_Z		3
+
+#define BMA255_FAST_CAL_RDY_S__POS	4
+#define BMA255_FAST_CAL_RDY_S__LEN	1
+#define BMA255_FAST_CAL_RDY_S__MSK	0x10
+#define BMA255_FAST_CAL_RDY_S__REG	BMA255_OFFSET_CTRL_REG
+
+#define BMA255_CAL_TRIGGER__POS		5
+#define BMA255_CAL_TRIGGER__LEN		2
+#define BMA255_CAL_TRIGGER__MSK		0x60
+#define BMA255_CAL_TRIGGER__REG		BMA255_OFFSET_CTRL_REG
+
+#define BMA255_COMP_CUTOFF__POS		0
+#define BMA255_COMP_CUTOFF__LEN		1
+#define BMA255_COMP_CUTOFF__MSK		0x01
+#define BMA255_COMP_CUTOFF__REG		BMA255_OFFSET_PARAMS_REG
+
+#define BMA255_COMP_TARGET_OFFSET_X__POS		1
+#define BMA255_COMP_TARGET_OFFSET_X__LEN		2
+#define BMA255_COMP_TARGET_OFFSET_X__MSK		0x06
+#define BMA255_COMP_TARGET_OFFSET_X__REG		BMA255_OFFSET_PARAMS_REG
+
+#define BMA255_COMP_TARGET_OFFSET_Y__POS		3
+#define BMA255_COMP_TARGET_OFFSET_Y__LEN		2
+#define BMA255_COMP_TARGET_OFFSET_Y__MSK		0x18
+#define BMA255_COMP_TARGET_OFFSET_Y__REG		BMA255_OFFSET_PARAMS_REG
+
+#define BMA255_COMP_TARGET_OFFSET_Z__POS		5
+#define BMA255_COMP_TARGET_OFFSET_Z__LEN		2
+#define BMA255_COMP_TARGET_OFFSET_Z__MSK		0x60
+#define BMA255_COMP_TARGET_OFFSET_Z__REG		BMA255_OFFSET_PARAMS_REG
+#define BMA255_SUCCESS					0
+#define BMA255_ERR_I2C					-1
+#define BMA255_ERR_STATUS				-3
+#define BMA255_ERR_SETUP_FAILURE		-4
+#define BMA255_ERR_GETGSENSORDATA		-5
+#define BMA255_ERR_IDENTIFICATION		-6
+#define BMA255_INIT_SUCC						(0)
+#define BMA255_INIT_FAIL						(-1)
+
+#define BMA255_BUFSIZE					256
+
+/* soft reset */
+#define BMA255_RESET_REG                        0x14
+#define BMA255_EN_SOFT_RESET_VALUE		0xB6
+
+#define BMA255_EN_SOFT_RESET__POS         0
+#define BMA255_EN_SOFT_RESET__LEN         8
+#define BMA255_EN_SOFT_RESET__MSK         0xFF
+#define BMA255_EN_SOFT_RESET__REG         BMA255_RESET_REG
+
+/* self test */
+#define BMA255_SELF_TEST_REG                        0x32
+
+#define BMA255_SELF_TEST_AMP__POS               4
+#define BMA255_SELF_TEST_AMP__LEN               1
+#define BMA255_SELF_TEST_AMP__MSK               0x10
+#define BMA255_SELF_TEST_AMP__REG               BMA255_SELF_TEST_REG
+
+#define BMA255_EN_SELF_TEST__POS                0
+#define BMA255_EN_SELF_TEST__LEN                2
+#define BMA255_EN_SELF_TEST__MSK                0x03
+#define BMA255_EN_SELF_TEST__REG                BMA255_SELF_TEST_REG
+
+#define BMA255_NEG_SELF_TEST__POS               2
+#define BMA255_NEG_SELF_TEST__LEN               1
+#define BMA255_NEG_SELF_TEST__MSK               0x04
+#define BMA255_NEG_SELF_TEST__REG               BMA255_SELF_TEST_REG
+
+/* power mode */
+#define BMA255_MODE_CTRL_REG			0x11
+
+#define BMA255_MODE_CTRL__POS			5
+#define BMA255_MODE_CTRL__LEN			3
+#define BMA255_MODE_CTRL__MSK			0xE0
+#define BMA255_MODE_CTRL__REG			BMA255_MODE_CTRL_REG
+
+#define BMA255_LOW_POWER_CTRL_REG		0x12
+
+#define BMA255_LOW_POWER_MODE__POS		6
+#define BMA255_LOW_POWER_MODE__LEN		1
+#define BMA255_LOW_POWER_MODE__MSK		0x40
+#define BMA255_LOW_POWER_MODE__REG		BMA255_LOW_POWER_CTRL_REG
+
+/* range */
+#define BMA255_RANGE_SEL_REG			0x0F
+
+#define BMA255_RANGE_SEL__POS			0
+#define BMA255_RANGE_SEL__LEN			4
+#define BMA255_RANGE_SEL__MSK			0x0F
+#define BMA255_RANGE_SEL__REG			BMA255_RANGE_SEL_REG
+
+/* bandwidth */
+#define BMA255_BW_7_81HZ			0x08
+#define BMA255_BW_15_63HZ			0x09
+#define BMA255_BW_31_25HZ			0x0A
+#define BMA255_BW_62_50HZ			0x0B
+#define BMA255_BW_125HZ				0x0C
+#define BMA255_BW_250HZ				0x0D
+#define BMA255_BW_500HZ				0x0E
+#define BMA255_BW_1000HZ			0x0F
+
+#define BMA255_BW_SEL_REG			0x10
+
+#define BMA255_BANDWIDTH__POS			0
+#define BMA255_BANDWIDTH__LEN			5
+#define BMA255_BANDWIDTH__MSK			0x1F
+#define BMA255_BANDWIDTH__REG			BMA255_BW_SEL_REG
+//tad3sgh add ++
+#define CONVERT_M			1
+#define CONVERT_M_DIV		4
+#define CONVERT_O			1
+#define CONVERT_O_DIV		71		//(C_PI_F32X * AXIS_RESOLUTION_FACTOR / 180)
+#define CONVERT_G			1
+#define CONVERT_G_DIV		938
+#define CONVERT_VRV			1
+#define CONVERT_VRV_DIV	(0x40000000)
+#define CONVERT_VLA_DIV	16384
+#define CONVERT_VG_DIV 16384
+//tad3sgh add --
+#endif

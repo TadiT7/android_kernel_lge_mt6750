@@ -1,0 +1,148 @@
+/*
+ * LG Electronics LS7 power device tree source
+ *
+ * Copyright (c) 2017 LG Electronics Co., Ltd.
+ *              http://www.lge.com
+ *
+ */
+
+/* battery profile */
+#include "../battery-BL-45F1F.dtsi"
+
+&i2c1 {
+	swithing_charger@6b {
+		status = "disabled";
+	 };
+};
+
+&i2c3 {
+	rt9460@25 {
+		status = "okay";
+		compatible = "rt,rt9460";
+		reg = <0x25>;
+		interrupt-parent = <&eintc>;
+		interrupts = <8 0x2002>;
+		debounce = <8 0>;
+		irq-gpio = <&pio 8 0x2002>;
+		vchg = <4400>;
+		vbst = <5000>;
+		ieoc = <200>;
+		mivr = <2>;
+		freq = <1>;
+		te_en;
+		iin_int;
+		mivr_en;
+
+		regulator-name = "rt9460_otg_supply";
+	};
+};
+
+&bat_comm {
+	/* Linear Charging Threshold */
+	recharging_voltage = <4275 >;
+
+	/* Charging Current Setting */
+	config_usb_if = <1 >;
+	usb_charger_current_suspend = <0 >;	/* Unit: 0.01 mA */
+	usb_charger_current_unconfigured = <50000 >;	/* Unit: 0.01 mA */
+	usb_charger_current_configured = <50000 >;	/* Unit: 0.01 mA */
+	usb_charger_current = <227500 >;
+	ac_charger_current = <227500 >;	/* Unit: 0.01 mA */
+	ac_charger_input_current = <90000 >;	/* Unit: 0.01 mA */
+	non_std_ac_charger_current = <50000 >;	/* Unit: 0.01 mA */
+	charging_host_charger_current = <150000 >;	/* Unit: 0.01 mA */
+	apple_0_5a_charger_current = <50000 >;	/* Unit: 0.01 mA */
+	apple_1_0a_charger_current = <100000 >;	/* Unit: 0.01 mA */
+	apple_2_1a_charger_current = <210000 >;	/* Unit: 0.01 mA */
+
+	/* charger error check */
+	v_charger_max = <10500 >;	/* unit: mV */
+	v_charger_min = <4400 >;
+
+	/* High battery support */
+	high_battery_voltage_support = <1 >;
+};
+
+/* fuel gauge */
+&bat_meter {
+	UNKNOWN = "battery,BL-45F1F_LGC";
+	/* LG Chem */
+	ISL6296A_L = "battery,BL-45F1F_LGC";
+	SW3800_VC0 = "battery,BL-45F1F_LGC";
+	/* TOCAD */
+	ISL6296A_C = "battery,BL-45F1F_TOCAD";
+	SW3800_VC1 = "battery,BL-45F1F_TOCAD";
+	/* BYD */
+	RA4301_VC0 = "battery,BL-45F1F_BYD";
+
+	/* cust_battery_meter.h */
+	r_charger_1 = <330 >;
+	r_charger_2 = <51 >;
+
+	rbat_pull_up_r = <62000 >;
+
+	shutdown_system_voltage = <3400 >;
+	/* K6 don't use this option */
+	cust_min_uisoc_percentage = <2>;
+	car_tune_value = <100 >;
+	/* keep min uisoc until voltage less than customization voltage of min uisoc */
+	cust_min_uisoc_voltage = <3400 >;
+
+	/* fg 2.0 */
+	shutdown_gauge0 = <0 >;
+	shutdown_gauge1_xmins = <0 >;
+	difference_hwocv_rtc = <20 >;
+	difference_hwocv_swocv = <30 >;
+	difference_swocv_rtc = <30 >;
+	difference_vbat_rtc = <30 >;
+	difference_swocv_rtc_pos = <15 >;
+	batterypseudo1 = <1 >;
+	recharge_tolerance = <2>;
+	max_swocv = <1>;
+};
+
+/ {
+	charger_controller: charger_controller {
+		status = "ok";
+		compatible = "lge,charger-controller";
+
+		lge,otp_v2;
+		lge,otp_fcc = <900>;
+		lge,fb_fcc = <900>;
+		lge,fb_ctrl_icl;
+		lge,thermal_ctrl_icl;
+
+		lge,llk_soc_max = <50>;
+		lge,llk_soc_min = <45>;
+
+		lge,safety_time = <600>; /*min*/
+	};
+};
+
+/ {
+	lge,battery-id{
+		compatible = "lge,battery-id";
+		lge,restrict-mode-enabled;
+	};
+};
+
+&pio {
+	drvvbus_default: drvvbus_default {
+	};
+
+	gpio43_mode1_drvvbus_low: drvvbus_low {
+		pins_cmd_dat {
+			/delete-property/	pins;
+			/delete-property/	slew-rate;
+			/delete-property/	output-low;
+		};
+	};
+
+	gpio43_mode1_drvvbus_high: drvvbus_high {
+		pins_cmd_dat {
+			/delete-property/	pins;
+			/delete-property/	slew-rate;
+			/delete-property/	output-high;
+		};
+	};
+};

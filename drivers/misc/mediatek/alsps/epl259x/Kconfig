@@ -1,0 +1,12 @@
+config LGE_SENSORS
+	bool "LGE SENSORS"
+	default n
+
+config MTK_EPL259X
+	bool "MTK_EPL259X for MediaTek package"
+	default n
+	help
+	It support different type sensor
+	in this platform. If this option
+	is set, it will support ambient
+	and light sensor MTK_EPL259X.

@@ -1,0 +1,197 @@
+/*
+ * LG Electronics CV3 power device tree source
+ *
+ * Copyright (c) 2017 LG Electronics Co., Ltd.
+ *              http://www.lge.com
+ *
+ */
+
+/* battery profile */
+#include "../battery-BL-T36.dtsi"
+
+/* removing device from dws */
+&i2c1 {
+	swithing_charger@6a {
+		status = "disabled";
+	};
+	swithing_charger@49 {
+		status = "disabled";
+	};
+};
+
+&i2c1 {
+	sm5424@49 {
+		status = "okay";
+		compatible = "sm,sm5424";
+		reg = <0x49>;
+		interrupt-parent = <&eintc>;
+		interrupts = <25 0x2002>;
+		debounce = <25 0>;
+		irq-gpio = <&pio 25 0x2002>;
+		en-gpio = <&pio 26 0>;
+
+		batreg = <4400>;
+		vbuslimit = <1800>;
+		fastchg = <500>;
+		dis_set = <8>;
+
+		regulator-name = "sm5424_otg_supply";
+    };
+};
+
+&i2c1 {
+	fan54005@6a {
+		status = "okay";
+		compatible = "fairchild,fan54005";
+		reg = <0x6a>;
+		interrupt-parent = <&eintc>;
+		interrupts = <22 0x2002>;
+		debounce = <22 0>;
+		irq-gpio = <&pio 22 0x2002>;
+
+		rsense = <68>;
+		iterm = <388>;
+		vsp = <4533>;
+		isafe = <1450>;
+		vsafe = <4400>;
+
+		regulator-name = "fan54005_otg_supply";
+	};
+};
+
+&bat_comm {
+	/* Linear Charging Threshold */
+	recharging_voltage = <4275 >;
+
+	/* Charging Current Setting */
+	config_usb_if = <1 >;
+	usb_charger_current_suspend = <0 >;	/* Unit: 0.01 mA */
+	usb_charger_current_unconfigured = <50000 >;    /* Unit: 0.01 mA */
+	usb_charger_current_configured = <50000 >;      /* Unit: 0.01 mA */
+	usb_charger_current = <50000 >;
+	ac_charger_current = <120000 >; /* Unit: 0.01 mA */
+	ac_charger_input_current = <120000 >;	/* Unit: 0.01 mA */
+	non_std_ac_charger_current = <50000 >;	/* Unit: 0.01 mA */
+	charging_host_charger_current = <150000 >;	/* Unit: 0.01 mA */
+	apple_0_5a_charger_current = <50000 >;	/* Unit: 0.01 mA */
+	apple_1_0a_charger_current = <100000 >;	/* Unit: 0.01 mA */
+	apple_2_1a_charger_current = <100000 >;	/* Unit: 0.01 mA */
+
+	/* charger error check */
+	v_charger_max = <10500 >;	/* unit: mV */
+	v_charger_min = <4400 >;
+
+	/* High battery support */
+	high_battery_voltage_support = <1 >;
+
+	/* Pump Express Plus support */
+	mtk_pump_express_plus_support = <0 >;
+
+	ta_start_battery_soc = <1 >;
+	ta_stop_battery_soc = <100 >;
+	ta_ac_charging_current = <200000 >;
+
+	ta_ac_12v_input_current = <180000 >;
+	ta_ac_9v_input_current = <180000 >;
+	ta_ac_7v_input_current = <180000 >;
+
+	ta_9v_support = <1 >;
+	ta_12v_support = <0 >;
+};
+
+/* fuel gauge */
+&bat_meter {
+	UNKNOWN = "battery,BL-T36_BYD";
+	LISHEN = "battery,BL-T36_LISHEN";
+	TOCAD = "battery,BL-T36_TOCAD";
+	BYD = "battery,BL-T36_BYD";
+
+	/* cust_battery_meter.h */
+	r_charger_1 = <330 >;
+	r_charger_2 = <39 >;
+
+	rbat_pull_up_r = <68000 >;
+
+	shutdown_system_voltage = <3400 >;
+	/* K6 don't use this option */
+	cust_min_uisoc_percentage = <2>;
+	car_tune_value = <100 >;
+	/* keep min uisoc until voltage less than customization voltage of min uisoc */
+	cust_min_uisoc_voltage = <3400 >;
+
+	/* fg 2.0 */
+	shutdown_gauge0 = <0 >;
+	shutdown_gauge1_xmins = <0 >;
+	difference_hwocv_rtc = <20 >;
+	difference_hwocv_swocv = <30 >;
+	difference_swocv_rtc = <30 >;
+	difference_vbat_rtc = <30 >;
+	difference_swocv_rtc_pos = <15 >;
+	batterypseudo1 = <1 >;
+	recharge_tolerance = <2>;
+	max_swocv = <1>;
+	embedded_battery =<1>;
+};
+
+/ {
+	charger_controller: charger_controller {
+		status = "ok";
+		compatible = "lge,charger-controller";
+
+		lge,otp_v2;
+		lge,otp_fcc = <900>;
+		lge,fb_fcc = <1500>;
+
+		lge,llk_soc_max = <50>;
+		lge,llk_soc_min = <45>;
+
+		lge,safety_time = <1440>; /*min*/
+
+		lge,battery-spec-size = <7>;
+		lge,battery-spec = <
+			 0 10 4100 1400	/* 0.5C */
+			 0 10 4400  500	/* 0.2C */
+			10 20 4200 2800	/* 1.0C */
+			10 20 4400 1400	/* 0.5C */
+			20 45 4200 2800	/* 1.0C */
+			20 45 4400 2000	/* 0.7C */
+			45 60 4100 1400	/* 0.5C */
+		>;
+	};
+};
+
+/ {
+	soc {
+		i2c4: i2c@1100f000 {
+			/delete-node/ mt6311@6b;
+		};
+	};
+};
+
+/ {
+	lge,battery-id{
+		compatible = "lge,battery-id";
+		lge,restrict-mode-enabled;
+	};
+};
+
+&pio {
+	drvvbus_default: drvvbus_default {
+	};
+
+	gpio43_mode1_drvvbus_low: drvvbus_low {
+		pins_cmd_dat {
+			/delete-property/	pins;
+			/delete-property/	slew-rate;
+			/delete-property/	output-low;
+		};
+	};
+
+	gpio43_mode1_drvvbus_high: drvvbus_high {
+		pins_cmd_dat {
+			/delete-property/	pins;
+			/delete-property/	slew-rate;
+			/delete-property/	output-high;
+		};
+	};
+};

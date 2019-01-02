@@ -1,0 +1,33 @@
+/*
+ * LG Electronics apds9930 sensor device tree source
+ *
+ * Copyright (c) 2016 LG Electronics Co., Ltd.
+ *              http://www.lge.com
+ *
+ */
+
+cust_alsps@39 {
+    compatible = "mediatek,apds9930";
+    reg = <0x39>;
+    status = "okay";
+    i2c_num = <3>;
+    i2c_addr= <0x39 0 0 0>;
+    polling_mode_ps = <0>;
+    polling_mode_als = <0>;
+    power_id = <0xffff>;
+    power_vol = <0>;
+    als_level = <0 328 861 1377 3125 7721 7767 12621 23062 28430 33274 47116 57694 57694 65535>;
+    als_value = <0 133 304 502 1004 2005 3058 5005 8008 10010 12000 16000 20000 20000 20000 20000>;
+    far_offset = <300>;
+    near_offset = <220>;
+    crosstalk_max = <650>;
+    ppcount = <0x06>;
+    ps_led_current = <0x28>;/* 4:50mA  5:75mA  6:100mA */
+    als_threshold = <100>; /* ch0 value for 4 lux */
+    als_ga = <1080>;
+    als_coe_b = <183>;
+    als_coe_c = <68>;
+    als_coe_d = <120>;
+    is_batch_supported_ps = <0>;
+    is_batch_supported_als = <0>;
+};

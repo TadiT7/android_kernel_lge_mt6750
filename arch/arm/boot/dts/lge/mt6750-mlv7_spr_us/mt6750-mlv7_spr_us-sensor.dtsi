@@ -1,0 +1,58 @@
+/*
+ * LG Electronics LS7 sensor device tree source
+ *
+ * Copyright (c) 2017 LG Electronics Co., Ltd.
+ *              http://www.lge.com
+ *
+ */
+
+/ {
+/*  start sensor */
+
+	soc {
+		/delete-node/ als_ps@0;
+		/delete-node/ barometer@0;
+		/delete-node/ gsensor@0;
+		/delete-node/ gyroscope@0;
+		/delete-node/ msensor@0;
+	};
+
+/*sysfs node for unified usercal*/
+	sensors-sysfs {
+		compatible = "lge,sensors-sysfs";
+		sysfs,node =
+			/* group, user_node, kernel node */
+			"accelerometer", "run_calibration",  "/sys/bus/platform/drivers/gsensor/run_fast_calibration",
+			"accelerometer", "selftest",         "/sys/bus/platform/drivers/gsensor/selftest",
+			"gyroscope",     "run_calibration",  "/sys/bus/platform/drivers/gyroscope/run_fast_calibration",
+			"gyroscope",     "selftest",         "/sys/bus/platform/drivers/gyroscope/selftest",
+			"proximity",     "run_calibration",  "/sys/bus/platform/drivers/als_ps/cali",
+			"proximity",     "calibration_data", "/sys/bus/platform/drivers/als_ps/ps_crosstalk"
+			;
+	};
+/* end sensor */
+};
+
+
+/* sensor i2c start */
+&i2c1 {
+	/delete-node/ alsps@60;
+	/delete-node/ gsensor@68;
+	/delete-node/ gyro@68;
+	/delete-node/ msensor@0f;
+
+//	#include "../bmc150-acc.dtsi"
+//	#include "../bmc150-mag.dtsi"
+	#include "../apds9930.dtsi"
+
+	cust_alsps@39 {
+		crosstalk_max = <720>;
+		als_ga = <225>;
+		als_coe_b = <188>;
+		als_coe_c = <71>;
+		als_coe_d = <128>;
+		als_threshold = <8>; // ch0 data for 4lux (8x gain)
+	};
+
+// move direction to rev dts
+};

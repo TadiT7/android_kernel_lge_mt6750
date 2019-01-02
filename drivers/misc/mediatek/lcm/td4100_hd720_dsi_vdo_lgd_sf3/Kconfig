@@ -1,0 +1,3 @@
+config LGD_INCELL_TD4100_HD_SF3
+        bool "Enable LGD TD4100 INCELL HD panel for SF3"
+        default n

@@ -1,0 +1,110 @@
+/*
+ * LG Electronics TH8 power device tree source
+ *
+ * Copyright (c) 2017 LG Electronics Co., Ltd.
+ *              http://www.lge.com
+ *
+ */
+
+#include "../battery-BL-T31.dtsi"
+
+/* Power */
+&i2c1 {
+	bq25601@6b {
+		status = "okay";
+		compatible = "ti,bq25601";
+		reg = <0x6b>;
+
+		interrupt-parent = <&eintc>;
+		interrupts = <8 IRQ_TYPE_EDGE_FALLING>;
+		debounce = <8 0>;
+		irq-gpio = <&pio 8 0x2002>;
+
+		iterm = <180>;
+		vindpm = <4500>;
+		ovp = <10500>;
+		watchdog = <0>;
+		chg_timer = <10>;
+		vreg = <4400>;
+		vrechg = <100>;
+
+		regulator-name = "bq25601_otg_supply";
+	};
+};
+
+&bat_comm {
+	/* Linear Charging Threshold */
+	recharging_voltage = <4300 >;
+
+	/* Charging Current Setting */
+	config_usb_if = <1 >;
+	usb_charger_current_unconfigured = <10000 >;	/* Unit: 0.01 mA */
+	ac_charger_current = <210000 >;	/* Unit: 0.01 mA */
+	ac_charger_input_current = <120000 >;	/* Unit: 0.01 mA */
+	non_std_ac_charger_current = <50000 >;	/* Unit: 0.01 mA */
+	charging_host_charger_current = <150000 >;	/* Unit: 0.01 mA */
+	apple_0_5a_charger_current = <50000 >;	/* Unit: 0.01 mA */
+	apple_1_0a_charger_current = <100000 >;	/* Unit: 0.01 mA */
+	apple_2_1a_charger_current = <210000 >;	/* Unit: 0.01 mA */
+
+	/* charger error check */
+	v_charger_max = <10500 >;	/* unit: mV */
+	v_charger_min = <4400 >;
+
+	/* High battery support */
+	high_battery_voltage_support = <1 >;
+};
+
+&bat_meter {
+	car_tune_value = <100>;
+	rbat_pull_up_r = <82000>;
+
+	TOCAD = "battery,BL-T31_TOCAD";
+	LGC = "battery,BL-T31_LGC";
+
+	shutdown_system_voltage = <3400 >;
+	/* keep min uisoc until voltage less than customization voltage of min uisoc */
+	cust_min_uisoc_percentage = <2>;
+	cust_min_uisoc_voltage = <3400 >;
+
+	/* fg 2.0 */
+	shutdown_gauge0 = <0 >;
+	shutdown_gauge1_xmins = <0 >;
+	difference_hwocv_rtc = <20 >;
+	difference_hwocv_swocv = <20 >;
+	difference_swocv_rtc = <30 >;
+	difference_vbat_rtc = <30 >;
+	difference_swocv_rtc_pos = <15 >;
+	max_swocv = <1>;
+	recharge_tolerance = <2>;
+	batterypseudo1 = <1 >;
+	embedded_battery =<1 >;
+};
+
+/ {
+	lge,battery-id {
+		compatible = "lge,battery-id";
+		lge,restrict-mode-enabled;
+	};
+};
+
+/ {
+	charger_controller: charger_controller {
+		status = "ok";
+		compatible = "lge,charger-controller";
+
+		lge,otp_for_sprint;
+		lge,otp_fcc = <450>;
+
+		lge,llk_soc_max = <50>;
+		lge,llk_soc_min = <45>;
+	};
+};
+
+/ {
+	soc {
+		i2c4: i2c@1100f000 {
+			/delete-node/ mt6311@6b;
+		};
+	};
+};

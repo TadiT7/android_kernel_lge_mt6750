@@ -1,0 +1,9 @@
+
+config MTK_ROHM_RPR0521
+	bool "rpr0521 for MediaTek package"
+	default n
+	help
+	It support different type sensor
+	in this platform. If this option
+	is set, it will support ambient
+	and light sensor RPR0521.
